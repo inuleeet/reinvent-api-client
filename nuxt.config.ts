@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
+    '@nuxt/image',
   ],
   devtools: {
     enabled: true,
