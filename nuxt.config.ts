@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vueuse/nuxt',
     '@nuxt/image',
+    '@pinia/nuxt',
   ],
   devtools: {
     enabled: true,
