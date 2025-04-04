@@ -1,10 +1,11 @@
 <script setup lang="ts">
-export type HttpMethodBadge = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+import type { NuxtUIColorTheme } from '~/types/color-theme';
+import type { HttpMethod } from '~/types/http-method';
 
-const { label } = defineProps<{ label: HttpMethodBadge }>();
+const { label } = defineProps<{ label: HttpMethod }>();
 
 const color = computed(() => {
-  let $color = '';
+  let $color: NuxtUIColorTheme = undefined;
 
   if (label === 'GET') $color = 'success';
   else if (label === 'POST') $color = 'warning';
@@ -12,15 +13,7 @@ const color = computed(() => {
   else if (label === 'PATCH') $color = 'neutral';
   else $color = 'error';
 
-  return $color as
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'info'
-    | 'warning'
-    | 'error'
-    | 'neutral'
-    | undefined;
+  return $color;
 });
 </script>
 
