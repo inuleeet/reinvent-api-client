@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import type { HttpMethodBadge } from '~/components/HttpMethodBadge.vue';
+import NewCollectionModal from './NewCollectionModal.vue';
+
+const COLLECTION_TREE_CLASS: string = `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`;
+
+const collectionsStore = useCollectionsStore();
+const {
+  collections,
+  activeCollection,
+  activeCollectionItem,
+  activeCollectionModel,
+} = storeToRefs(collectionsStore);
 
 const accountMenu = [
   {
@@ -16,37 +26,21 @@ const accountMenu = [
   },
 ];
 
-const collectionChildren = ref([
-  {
-    label: 'Todos',
-    value: 'get-todo',
-  },
-  {
-    label: 'Todos',
-    value: 'post-todo',
-  },
-  {
-    label: 'Todos',
-    value: 'put-todo',
-  },
-  {
-    label: 'Todos',
-    value: 'patch-todo',
-  },
-  {
-    label: 'Todos',
-    value: 'delete-todo',
-  },
-]);
+const activeCollectionHighlighter = computed(() => {
+  if (!collections.value?.length || !activeCollection.value) return '0';
 
-const selectedChild = ref(collectionChildren.value.at(0)?.value);
-const childHighlighter = ref('0');
+  const index = collections.value.findIndex(($collection) => {
+    return $collection.id === activeCollection.value?.id;
+  });
 
-function selectChild(index: number): void {
-  selectedChild.value = collectionChildren.value.at(index)?.value;
-  childHighlighter.value = index
-    ? `calc(${index * 2.375}rem + ${index * 0.25}rem)`
-    : '0';
+  return index ? `calc(${index * 2.375}rem + ${index * 0.25}rem)` : '0';
+});
+
+function addCollection() {
+  const overlay = useOverlay();
+  const modal = overlay.create(NewCollectionModal);
+
+  modal.open();
 }
 </script>
 
@@ -82,33 +76,42 @@ function selectChild(index: number): void {
 
     <div class="flex items-center gap-1">
       <USelectMenu
-        default-value="JSON Placeholder"
-        :items="['JSON Placeholder']"
+        v-model="activeCollectionModel"
+        :items="
+          collections?.map(($collection) => ({
+            label: $collection.name,
+            value: $collection.id,
+          }))
+        "
         class="flex-1"
       />
 
-      <UButton icon="i-lucide-plus" />
+      <UButton
+        icon="i-lucide-plus"
+        @click="addCollection"
+      />
     </div>
 
     <div class="flex-1">
       <div
-        class="pl-2 flex flex-col gap-1 relative before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0 after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all"
+        :class="[
+          'pl-2 flex flex-col gap-1 relative',
+          collections?.length && activeCollectionItem && COLLECTION_TREE_CLASS,
+        ]"
         data-list="collection-children"
       >
         <UButton
-          v-for="({ label, value }, index) in collectionChildren"
-          :key="value"
-          :variant="selectedChild === value ? 'soft' : 'ghost'"
+          v-for="{ id, description, method } in activeCollection?.items"
+          :key="id"
+          :variant="activeCollectionItem?.id === id ? 'soft' : 'ghost'"
           color="neutral"
-          @click="selectChild(index)"
+          @click="collectionsStore.setActiveCollectionItem(id)"
         >
           <div class="w-[2.999rem]">
-            <HttpMethodBadge
-              :label="value.split('-').at(0)?.toUpperCase() as HttpMethodBadge"
-            />
+            <HttpMethodBadge :label="method" />
           </div>
 
-          <span>{{ label }}</span>
+          <span>{{ description }}</span>
         </UButton>
       </div>
     </div>
@@ -134,6 +137,6 @@ function selectChild(index: number): void {
 
 <style scoped>
 [data-list='collection-children']::after {
-  top: v-bind(childHighlighter);
+  top: v-bind(activeCollectionHighlighter);
 }
 </style>
