@@ -1,75 +1,78 @@
-# Nuxt Minimal Starter
+# Simple Local API Client
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A lightweight, no-frills HTTP REST API client for local testing and development.
 
-## Setup
+## Overview
 
-Make sure to install dependencies:
+This project is a minimalist API client that focuses solely on executing HTTP REST API methods without the bloat of comprehensive tools like Postman. It's designed for developers who need a quick, simple way to test API endpoints during development.
+
+## Features
+
+- **Lightweight**: No unnecessary features or bloat
+- **Core HTTP Methods**: Support for GET, POST, PUT, DELETE, PATCH
+- **Local Only**: Runs completely on your local machine
+- **Fast Startup**: Minimal initialization time
+- **Simple Interface**: Focused on request/response without distractions
+
+## Why Another API Client?
+
+While tools like Postman offer comprehensive features, they can be resource-intensive and include many features you may not need. This client focuses on doing one thing well: executing HTTP requests quickly and displaying responses clearly.
+
+## Tech Stack
+
+- **Nuxt**: Provides the application framework
+- **Vue**: Powers the simple UI components
+- **Bun**: Offers a fast JavaScript runtime environment
+- **TypeScript**: Ensures type safety
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js installed on your machine
+- Bun runtime (for optimal performance)
+
+### Installation
+
+1. Clone this repository:
 
 ```bash
-# npm
-npm install
+git clone https://github.com/xcvzmoon/api-client.git
+```
 
-# pnpm
-pnpm install
+2. Change to the project directory:
 
-# yarn
-yarn install
+```bash
+cd simple-api-client
+```
 
-# bun
+3. Install dependencies:
+
+```bash
 bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+4. Start the application:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
 bun run dev
 ```
 
-## Production
+5. Open your browser to `http://localhost:3000`
 
-Build the application for production:
+## Usage
 
-```bash
-# npm
-npm run build
+1. Select your HTTP method from the dropdown
+2. Enter the request URL
+3. Add headers if needed
+4. Add request body for GET/POST/PUT/PATCH/DELETE methods
+5. Click button to execute
+6. View the response and status code
 
-# pnpm
-pnpm build
+## Project Status
 
-# yarn
-yarn build
+This is a personal project created to fulfill a specific need for a no-frills API testing tool. It's intentionally minimal and may not receive extensive feature updates.
 
-# bun
-bun run build
-```
+## License
 
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+MIT License
