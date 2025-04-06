@@ -95,9 +95,9 @@ const activeCollectionHighlighter = computed(() => {
         <div
           :class="[
             'pl-2 flex flex-col gap-1 relative',
-            collections?.length &&
-              activeCollectionItem &&
-              `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`,
+            collections?.length
+              && activeCollectionItem
+              && `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`,
           ]"
           data-list="collection-children"
         >
