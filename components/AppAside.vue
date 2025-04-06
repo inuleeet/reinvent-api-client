@@ -92,7 +92,10 @@ function addCollection() {
       />
     </div>
 
-    <div class="flex-1">
+    <div
+      v-if="activeCollection?.items?.length"
+      class="flex-1"
+    >
       <div
         :class="[
           'pl-2 flex flex-col gap-1 relative',
@@ -114,6 +117,25 @@ function addCollection() {
           <span>{{ description }}</span>
         </UButton>
       </div>
+    </div>
+
+    <div
+      v-else
+      class="border-(--ui-border-muted) border border-dashed rounded-md flex-1 grid place-items-center select-none"
+    >
+      <span
+        v-if="collections?.length"
+        class="text-(--ui-text-muted) text-xs"
+      >
+        No available request
+      </span>
+
+      <span
+        v-else
+        class="text-(--ui-text-muted) text-xs text-center text-balance"
+      >
+        Add collection first to view available requests
+      </span>
     </div>
 
     <UAlert
