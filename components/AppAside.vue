@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NewCollectionModal from './NewCollectionModal.vue';
 
-const COLLECTION_TREE_CLASS: string = `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`;
+const collectionTreeClass: string = `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`;
 
 const collectionsStore = useCollectionsStore();
 const {
@@ -74,68 +74,77 @@ function addCollection() {
 
     <USeparator />
 
-    <div class="flex items-center gap-1">
-      <USelectMenu
-        v-model="activeCollectionModel"
-        :items="
-          collections?.map(($collection) => ({
-            label: $collection.name,
-            value: $collection.id,
-          }))
-        "
-        class="flex-1"
-      />
+    <template v-if="collections?.length">
+      <div class="flex items-center gap-1">
+        <USelectMenu
+          v-model="activeCollectionModel"
+          :items="
+            collections?.map(($collection) => ({
+              label: $collection.name,
+              value: $collection.id,
+            }))
+          "
+          class="flex-1"
+        />
 
-      <UButton
-        icon="i-lucide-plus"
-        @click="addCollection"
-      />
-    </div>
-
-    <div
-      v-if="activeCollection?.items?.length"
-      class="flex-1"
-    >
-      <div
-        :class="[
-          'pl-2 flex flex-col gap-1 relative',
-          collections?.length && activeCollectionItem && COLLECTION_TREE_CLASS,
-        ]"
-        data-list="collection-children"
-      >
         <UButton
-          v-for="{ id, description, method } in activeCollection?.items"
-          :key="id"
-          :variant="activeCollectionItem?.id === id ? 'soft' : 'ghost'"
-          color="neutral"
-          @click="collectionsStore.setActiveCollectionItem(id)"
-        >
-          <div class="w-[2.999rem]">
-            <HttpMethodBadge :label="method" />
-          </div>
-
-          <span>{{ description }}</span>
-        </UButton>
+          icon="i-lucide-plus"
+          @click="addCollection"
+        />
       </div>
-    </div>
+
+      <div
+        v-if="activeCollection?.items.length"
+        class="flex-1"
+      >
+        <div
+          :class="[
+            'pl-2 flex flex-col gap-1 relative',
+            collections?.length && activeCollectionItem && collectionTreeClass,
+          ]"
+          data-list="collection-children"
+        >
+          <UButton
+            v-for="{ id, description, method } in activeCollection?.items"
+            :key="id"
+            :variant="activeCollectionItem?.id === id ? 'soft' : 'ghost'"
+            color="neutral"
+            @click="collectionsStore.setActiveCollectionItem(id)"
+          >
+            <div class="w-[2.999rem]">
+              <HttpMethodBadge :label="method" />
+            </div>
+
+            <span>{{ description }}</span>
+          </UButton>
+        </div>
+      </div>
+
+      <div
+        v-else
+        class="border-(--ui-border-muted) border border-dashed rounded-md flex-1 grid place-items-center select-none"
+      >
+        <span class="text-(--ui-text-muted) text-xs text-center text-balance">
+          No available requests
+        </span>
+      </div>
+    </template>
 
     <div
       v-else
-      class="border-(--ui-border-muted) border border-dashed rounded-md flex-1 grid place-items-center select-none"
+      class="border-(--ui-border-muted) border border-dashed rounded-md flex-1 flex flex-col items-center justify-center gap-4 select-none"
     >
-      <span
-        v-if="collections?.length"
-        class="text-(--ui-text-muted) text-xs"
-      >
-        No available request
-      </span>
-
-      <span
-        v-else
-        class="text-(--ui-text-muted) text-xs text-center text-balance"
-      >
+      <span class="text-(--ui-text-muted) text-xs text-center text-balance">
         Add collection first to view available requests
       </span>
+
+      <UButton
+        class="justify-center select-none"
+        @click="addCollection"
+      >
+        <UIcon name="i-lucide-plus" />
+        <span>Add new collection</span>
+      </UButton>
     </div>
 
     <UAlert
@@ -147,6 +156,7 @@ function addCollection() {
     />
 
     <UButton
+      v-if="collections?.length"
       color="neutral"
       variant="outline"
       class="justify-center select-none"
