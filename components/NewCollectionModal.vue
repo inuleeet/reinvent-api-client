@@ -5,7 +5,6 @@ const collectionsStore = useCollectionsStore();
 
 const name = ref<string>();
 const description = ref<string>();
-const open = ref<boolean>();
 
 function addCollection() {
   if (!name.value || !description.value) return;
@@ -26,7 +25,6 @@ function addCollection() {
 
 <template>
   <UModal
-    v-model:open="open"
     class="max-w-[30rem]"
     title="Add New Collection"
     :dismissible="false"
