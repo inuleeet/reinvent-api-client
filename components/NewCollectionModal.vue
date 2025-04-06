@@ -3,17 +3,22 @@ import type { Collection } from '~/types/collection';
 
 const collectionsStore = useCollectionsStore();
 
+const emit = defineEmits<{ close: [boolean] }>();
+
 const name = ref<string>();
 const description = ref<string>();
-const open = ref<boolean>();
+
+const isCompleted = computed(() => {
+  return name.value && description.value;
+});
 
 function addCollection() {
-  if (!name.value || !description.value) return;
+  if (!isCompleted.value) return;
 
   const collection: Collection = {
     id: crypto.randomUUID(),
-    name: name.value,
-    description: description.value,
+    name: name.value!,
+    description: description.value!,
     items: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -21,12 +26,13 @@ function addCollection() {
 
   collectionsStore.addCollection(collection);
   collectionsStore.setActiveCollection(collection.id);
+
+  emit('close', true);
 }
 </script>
 
 <template>
   <UModal
-    v-model:open="open"
     class="max-w-[30rem]"
     title="Add New Collection"
     :dismissible="false"
@@ -72,10 +78,7 @@ function addCollection() {
       <UButton
         label="Add Collection"
         :disabled="!name?.length"
-        @click="
-          addCollection();
-          $emit('close'!);
-        "
+        @click="addCollection"
       />
     </template>
   </UModal>

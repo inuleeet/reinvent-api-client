@@ -1,75 +1,81 @@
 import type { Collection, CollectionItem } from '~/types/collection';
 
-export const useCollectionsStore = defineStore('collections', () => {
-  const collections = ref<Collection[]>();
-  const activeCollection = ref<Collection>();
-  const activeCollectionItem = ref<CollectionItem>();
+export const useCollectionsStore = defineStore(
+  'collections',
+  () => {
+    const collections = ref<Collection[]>();
+    const activeCollection = ref<Collection>();
+    const activeCollectionItem = ref<CollectionItem>();
 
-  const activeCollectionModel = computed({
-    get: () => ({
-      label: activeCollection.value?.name ?? ('' as string),
-      value: activeCollection.value?.id ?? ('' as string),
-    }),
-    set: (collection) => {
-      activeCollection.value = collections.value?.find(($collection) => {
-        return $collection.id === collection.value;
+    const activeCollectionModel = computed({
+      get: () => ({
+        label: activeCollection.value?.name ?? ('' as string),
+        value: activeCollection.value?.id ?? ('' as string),
+      }),
+      set: (collection) => {
+        activeCollection.value = collections.value?.find(($collection) => {
+          return $collection.id === collection.value;
+        });
+      },
+    });
+
+    function addCollection(collection: Collection) {
+      if (!collections.value) collections.value = [];
+
+      const hasSameId = collections.value.some(($collection) => {
+        return $collection.id === collection.id;
       });
-    },
-  });
 
-  function addCollection(collection: Collection) {
-    if (!collections.value) collections.value = [];
+      if (hasSameId) collection.id = crypto.randomUUID();
 
-    const hasSameId = collections.value.some(($collection) => {
-      return $collection.id === collection.id;
-    });
+      collections.value = [...collections.value, collection];
+    }
 
-    if (hasSameId) collection.id = crypto.randomUUID();
+    function addCollectionItem(item: CollectionItem) {
+      if (!activeCollection.value) return;
 
-    collections.value = [...collections.value, collection];
-  }
+      if (!activeCollection.value.items) activeCollection.value.items = [];
 
-  function addCollectionItem(item: CollectionItem) {
-    if (!activeCollection.value) return;
+      const hasSameId = activeCollection.value.items.some(($item) => {
+        return $item.id === item.id;
+      });
 
-    if (!activeCollection.value.items) activeCollection.value.items = [];
+      if (hasSameId) item.id = crypto.randomUUID();
 
-    const hasSameId = activeCollection.value.items.some(($item) => {
-      return $item.id === item.id;
-    });
+      activeCollection.value.items = [...activeCollection.value.items, item];
+    }
 
-    if (hasSameId) item.id = crypto.randomUUID();
+    function deleteCollection(collection: Collection) {
+      collections.value = collections.value?.filter(($collection) => {
+        return $collection.id !== collection.id;
+      });
+    }
 
-    activeCollection.value.items = [...activeCollection.value.items, item];
-  }
+    function setActiveCollection(id: string) {
+      activeCollection.value = collections.value?.find(($collection) => {
+        return $collection.id === id;
+      });
+    }
 
-  function deleteCollection(collection: Collection) {
-    collections.value = collections.value?.filter(($collection) => {
-      return $collection.id !== collection.id;
-    });
-  }
+    function setActiveCollectionItem(id: string) {
+      activeCollectionItem.value = activeCollection.value?.items.find(
+        ($item) => {
+          return $item.id === id;
+        },
+      );
+    }
 
-  function setActiveCollection(id: string) {
-    activeCollection.value = collections.value?.find(($collection) => {
-      return $collection.id === id;
-    });
-  }
-
-  function setActiveCollectionItem(id: string) {
-    activeCollectionItem.value = activeCollection.value?.items.find(($item) => {
-      return $item.id === id;
-    });
-  }
-
-  return {
-    collections,
-    activeCollection,
-    activeCollectionItem,
-    activeCollectionModel,
-    addCollection,
-    addCollectionItem,
-    deleteCollection,
-    setActiveCollection,
-    setActiveCollectionItem,
-  };
-});
+    return {
+      collections,
+      activeCollection,
+      activeCollectionItem,
+      activeCollectionModel,
+      addCollection,
+      addCollectionItem,
+      deleteCollection,
+      setActiveCollection,
+      setActiveCollectionItem,
+    };
+  },
+  { persist: true },
+);
