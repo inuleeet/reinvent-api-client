@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import NewCollectionModal from './NewCollectionModal.vue';
+import { NewCollectionModal, NewRequestModal } from '#components';
 
-const collectionTreeClass: string = `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`;
+const overlay = useOverlay();
 
 const collectionsStore = useCollectionsStore();
 const {
@@ -29,19 +29,12 @@ const accountMenu = [
 const activeCollectionHighlighter = computed(() => {
   if (!collections.value?.length || !activeCollection.value) return '0';
 
-  const index = collections.value.findIndex(($collection) => {
-    return $collection.id === activeCollection.value?.id;
+  const index = activeCollection.value.items.findIndex(($item) => {
+    return $item.id === activeCollectionItem.value?.id;
   });
 
   return index ? `calc(${index * 2.375}rem + ${index * 0.25}rem)` : '0';
 });
-
-function addCollection() {
-  const overlay = useOverlay();
-  const modal = overlay.create(NewCollectionModal);
-
-  modal.open();
-}
 </script>
 
 <template>
@@ -78,18 +71,20 @@ function addCollection() {
       <div class="flex items-center gap-1">
         <USelectMenu
           v-model="activeCollectionModel"
+          class="flex-1"
           :items="
             collections?.map(($collection) => ({
               label: $collection.name,
               value: $collection.id,
             }))
           "
-          class="flex-1"
+          :ui="{ content: 'w-[16.5rem] ml-2' }"
+          :content="{}"
         />
 
         <UButton
           icon="i-lucide-plus"
-          @click="addCollection"
+          @click="overlay.create(NewCollectionModal).open()"
         />
       </div>
 
@@ -100,12 +95,14 @@ function addCollection() {
         <div
           :class="[
             'pl-2 flex flex-col gap-1 relative',
-            collections?.length && activeCollectionItem && collectionTreeClass,
+            collections?.length &&
+              activeCollectionItem &&
+              `before:content-[''] before:bg-(--ui-bg-muted) before:w-px before:h-full before:absolute before:left-0 before:top-0  after:content-[''] after:bg-(--ui-primary) after:rounded-md after:w-[3px] after:h-9 after:absolute after:-left-px after:transition-all`,
           ]"
           data-list="collection-children"
         >
           <UButton
-            v-for="{ id, description, method } in activeCollection?.items"
+            v-for="{ id, name, method } in activeCollection?.items"
             :key="id"
             :variant="activeCollectionItem?.id === id ? 'soft' : 'ghost'"
             color="neutral"
@@ -115,7 +112,7 @@ function addCollection() {
               <HttpMethodBadge :label="method" />
             </div>
 
-            <span>{{ description }}</span>
+            <span>{{ name }}</span>
           </UButton>
         </div>
       </div>
@@ -140,7 +137,7 @@ function addCollection() {
 
       <UButton
         class="justify-center select-none"
-        @click="addCollection"
+        @click="overlay.create(NewCollectionModal).open()"
       >
         <UIcon name="i-lucide-plus" />
         <span>Add new collection</span>
@@ -160,6 +157,7 @@ function addCollection() {
       color="neutral"
       variant="outline"
       class="justify-center select-none"
+      @click="overlay.create(NewRequestModal).open()"
     >
       <UIcon name="i-lucide-plus" />
       <span>Add new request</span>
