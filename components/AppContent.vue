@@ -13,24 +13,30 @@ const label = computed(() => {
     : `${activeCollectionItem.value?.url}/`;
 });
 
-const response = ref<unknown>();
+const result = ref<unknown>();
 const duration = ref<number>();
 const loading = ref<boolean>();
 
-async function run() {
+async function invokeFetch() {
   loading.value = true;
 
-  const startTime = performance.now();
-  const url = params.value ? `${label.value}${params.value}` : label.value;
+  let startTime: number;
 
-  const { data, status, error } = await useFetch(url, {
-    method: activeCollectionItem.value?.method,
-  });
+  const response = await $fetch(
+    params.value ? `${label.value}${params.value}` : label.value,
+    {
+      method: activeCollectionItem.value?.method,
+      cache: 'no-cache',
+      onRequest() {
+        startTime = performance.now();
+      },
+      onResponse() {
+        duration.value = Math.floor(performance.now() - startTime);
+      },
+    },
+  );
 
-  if (status.value) duration.value = Math.round(performance.now() - startTime);
-
-  if (status.value === 'success') response.value = data.value;
-  else response.value = error.value;
+  if (response) result.value = response;
 
   loading.value = false;
 }
@@ -69,7 +75,7 @@ async function run() {
           color="neutral"
           variant="subtle"
           icon="i-lucide-send"
-          @click="run"
+          @click="invokeFetch"
         />
       </UButtonGroup>
 
@@ -102,7 +108,7 @@ async function run() {
               v-if="!loading"
               class="size-full overflow-auto p-4"
             >
-              <pre class="text-sm text-pretty">{{ response }}</pre>
+              <pre class="text-sm text-pretty">{{ result }}</pre>
             </div>
           </div>
         </div>
