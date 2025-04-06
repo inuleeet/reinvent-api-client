@@ -149,6 +149,7 @@ const activeCollectionHighlighter = computed(() => {
       title="Heads up!"
       description="The light mode colors have not yet been fully updated."
       icon="i-lucide-terminal"
+      :ui="{ description: 'text-xs' }"
     />
 
     <UButton
