@@ -79,7 +79,6 @@ const activeCollectionHighlighter = computed(() => {
             }))
           "
           :ui="{ content: 'w-[16.5rem] ml-2' }"
-          :content="{}"
         />
 
         <UButton
