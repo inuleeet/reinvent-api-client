@@ -11,9 +11,10 @@ export type Collection = {
 
 export type CollectionItem = {
   id: string;
+  method: HttpMethod;
   name: string;
   description: string;
-  method: HttpMethod;
+  url: string;
   createdAt: string;
   updatedAt: string;
 };

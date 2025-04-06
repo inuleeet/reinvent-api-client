@@ -79,7 +79,6 @@ const activeCollectionHighlighter = computed(() => {
             }))
           "
           :ui="{ content: 'w-[16.5rem] ml-2' }"
-          :content="{}"
         />
 
         <UButton
@@ -150,6 +149,7 @@ const activeCollectionHighlighter = computed(() => {
       title="Heads up!"
       description="The light mode colors have not yet been fully updated."
       icon="i-lucide-terminal"
+      :ui="{ description: 'text-xs' }"
     />
 
     <UButton

@@ -28,9 +28,10 @@ function addRequest() {
 
   const collectionItem: CollectionItem = {
     id: crypto.randomUUID(),
+    method: methods[Number(method.value)].label as HttpMethod,
     name: name.value!,
     description: description.value!,
-    method: methods[Number(method.value)].label as HttpMethod,
+    url: url.value!,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
