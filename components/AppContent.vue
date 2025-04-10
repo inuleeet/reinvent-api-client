@@ -3,7 +3,7 @@ const collectionsStore = useCollectionsStore();
 const { activeCollection, activeCollectionItem }
   = storeToRefs(collectionsStore);
 
-const params = ref<string>();
+const shiki = useShiki();
 
 const label = computed(() => {
   return activeCollectionItem.value?.url.at(
@@ -16,6 +16,7 @@ const label = computed(() => {
 const result = ref<unknown>();
 const duration = ref<number>();
 const loading = ref<boolean>();
+const params = ref<string>();
 
 async function invokeFetch() {
   loading.value = true;
@@ -36,7 +37,8 @@ async function invokeFetch() {
     },
   );
 
-  if (response) result.value = response;
+  if (response)
+    result.value = await shiki.highlightCode(JSON.stringify(response, null, 2));
 
   loading.value = false;
 }
@@ -106,9 +108,14 @@ async function invokeFetch() {
           >
             <div
               v-if="!loading"
-              class="size-full overflow-auto p-4"
+              class="rounded-b-[inherit] size-full flex flex-col overflow-auto"
             >
-              <pre class="text-sm text-pretty">{{ result }}</pre>
+              <div
+                class="text-xs"
+                v-html="result"
+              />
+
+              <div class="bg-[#282c34] flex-1" />
             </div>
           </div>
         </div>
