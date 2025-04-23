@@ -107,9 +107,7 @@ async function invokeFetch() {
           <div
             class="bg-(--ui-bg-muted) rounded-b-md w-[calc((((100svw-19rem)-1.5rem)/2)-2px)] h-[calc(100svh-12.625rem)]"
           >
-            <div
-              class="bg-[#282c34] rounded-b-[inherit] size-full flex flex-col overflow-auto"
-            >
+            <div class="bg-[#282c34] rounded-b-[inherit] size-full flex flex-col overflow-auto">
               <div
                 v-if="!loading"
                 class="text-xs"
