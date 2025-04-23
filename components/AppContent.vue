@@ -13,7 +13,7 @@ const label = computed(() => {
     : `${activeCollectionItem.value?.url}/`;
 });
 
-const result = ref<unknown>();
+const result = ref<VNode>();
 const duration = ref<number>();
 const loading = ref<boolean>();
 const params = ref<string>();
@@ -38,7 +38,12 @@ async function invokeFetch() {
   );
 
   if (response) {
-    result.value = await shiki.highlightCode(JSON.stringify(response, null, 2));
+    const code = await shiki.highlightCode(JSON.stringify(response, null, 2));
+
+    result.value = h('div', {
+      class: 'text-xs',
+      innerHTML: code,
+    });
   }
 
   loading.value = false;
@@ -62,7 +67,7 @@ async function invokeFetch() {
         class="w-full"
         size="lg"
       >
-        <UButton
+        <UBadge
           color="neutral"
           variant="subtle"
           :label
@@ -71,7 +76,6 @@ async function invokeFetch() {
         <UInput
           v-model="params"
           class="flex-1"
-          placeholder="Enter query parameters"
         />
 
         <UButton
@@ -107,12 +111,10 @@ async function invokeFetch() {
           <div
             class="bg-(--ui-bg-muted) rounded-b-md w-[calc((((100svw-19rem)-1.5rem)/2)-2px)] h-[calc(100svh-12.625rem)]"
           >
-            <div class="bg-[#282c34] rounded-b-[inherit] size-full flex flex-col overflow-auto">
-              <div
-                v-if="!loading"
-                class="text-xs"
-                v-html="result"
-              />
+            <div
+              class="bg-[#282c34] rounded-b-[inherit] size-full flex flex-col overflow-auto"
+            >
+              <component :is="result" />
             </div>
           </div>
         </div>
