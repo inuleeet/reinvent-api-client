@@ -1,4 +1,4 @@
-# Simple Local API Client
+# As User Sees It
 
 A lightweight, no-frills HTTP REST API client for local testing and development.
 
@@ -34,31 +34,12 @@ While tools like Postman offer comprehensive features, they can be resource-inte
 
 ### Installation
 
-1. Clone this repository:
-
-```bash
-git clone https://github.com/xcvzmoon/api-client.git
-```
-
-2. Change to the project directory:
-
-```bash
-cd simple-api-client
-```
-
-3. Install dependencies:
-
-```bash
+```terminal
+bunx gitpick xcvzmoon/as-user-sees-it
+cd as-user-sees-it
 bun install
+bun run dev --o
 ```
-
-4. Start the application:
-
-```bash
-bun run dev
-```
-
-5. Open your browser to `http://localhost:3000`
 
 ## Usage
 
